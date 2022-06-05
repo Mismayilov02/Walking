@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -46,10 +47,11 @@ import java.util.List;
 public class maps_fragment extends Fragment  {
 
       GoogleMap mMap;
-    Button btn_location;
+
     ImageView konum_image , uydu_image;
+    SearchView searchView;
     int izin_kontrolu = 0;
-    EditText location_text;
+
     FusedLocationProviderClient fusedLocationProviderClient;
     List<LatLng> latLng;
     Task<Location> locationTask;
@@ -101,13 +103,43 @@ public class maps_fragment extends Fragment  {
                              @Nullable Bundle savedInstanceState) {
       View v=   inflater.inflate(R.layout.fragment_maps_fragment, container, false);
 
-        btn_location = v.findViewById(R.id.btn_location);
-        location_text = v.findViewById(R.id.location_text);
+
         uydu_image = v.findViewById(R.id.uydu_image);
         konum_image = v.findViewById(R.id.konum_image);
+        searchView = v.findViewById(R.id.searchView);
       //  fusedLocationProviderClient =
 
+             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                 @Override
+                 public boolean onQueryTextSubmit(String s) {
 
+
+                     if(searchView.getQuery() == null || searchView.getQuery().toString() ==""){
+
+                     }else {
+                         String get_konum = searchView.getQuery().toString();
+                         List<Address> addressList = null;
+                         Geocoder geocoder = new Geocoder(getActivity());
+                         try {
+                             addressList = geocoder.getFromLocationName(get_konum, 1);
+                         } catch (IOException e) {
+                             e.printStackTrace();
+                         }
+
+                         Address address = addressList.get(0);
+                         LatLng deneme = new LatLng(address.getLatitude(), address.getLongitude());
+                         mMap.clear();
+                         mMap.addMarker(new MarkerOptions().position(deneme).title("thiss deneme"));
+                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(deneme, 10f));
+                     }
+                         return false;
+                 }
+
+                 @Override
+                 public boolean onQueryTextChange(String s) {
+                     return false;
+                 }
+             });
 
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -154,44 +186,15 @@ public class maps_fragment extends Fragment  {
             public void onClick(View view) {
                 if(mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
                     mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                    uydu_image.setImageResource(R.drawable.signal_satellite);
+                   // uydu_image.setImageResource(R.drawable.signal_satellite);
                 }else{
                     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                    uydu_image.setImageResource(R.drawable.satellite);
+                   // uydu_image.setImageResource(R.drawable.satellite);
                 }
             }
         });
 
 
-        btn_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if(location_text == null || location_text.getText().toString() ==""){
-
-                }else{
-                    String get_konum = location_text.getText().toString();
-                    List<Address> addressList = null;
-                    Geocoder geocoder = new Geocoder(getActivity());
-                    try {
-                        addressList = geocoder.getFromLocationName(get_konum , 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    Address address = addressList.get(0);
-                    LatLng deneme = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(deneme).title("thiss deneme"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(deneme ,10f));
-
-                }
-
-
-
-
-            }
-        });
 
         return v;
     }
