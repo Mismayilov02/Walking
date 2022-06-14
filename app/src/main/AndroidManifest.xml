@@ -1,10 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.walking" >
+    package="com.example.walking">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="  android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name=" android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.hardware.camera2.full" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front.autofocus"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -12,10 +35,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Walking" >
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+        android:theme="@style/Theme.Walking">
+
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 
@@ -32,8 +53,11 @@
             android:value="AIzaSyAAXXQ26l9ELAU6dL5XIjJXOzd3MGikI1Q" />
 
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".Spash_screen"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,6 +1,7 @@
 package com.example.walking;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.CameraX;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
@@ -9,7 +10,10 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
+
 
     BottomNavigationView bottomNavigationView;
     NavHostFragment navHostFragment;
@@ -22,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
        // locationManager = (LocationManager) getS
 
-        bottomNavigationView = findViewById(R.id.bottom_navigationview);
-        navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navhost_frgment);
-        NavigationUI.setupWithNavController(bottomNavigationView , navHostFragment.getNavController());
+       // bottomNavigationView = findViewById(R.id.bottom_navigationview);
+       // navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.navhost_frgment);
+        //NavigationUI.setupWithNavController(bottomNavigationView , navHostFragment.getNavController());
     }
 }

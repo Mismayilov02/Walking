@@ -3,21 +3,58 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigatin_fragment_screen"
-    app:startDestination="@id/walking_fragment">
+    app:startDestination="@id/home_fragment">
 
     <fragment
         android:id="@+id/home_fragment"
         android:name="com.example.walking.home_fragment"
         android:label="fragment_home_fragment"
-        tools:layout="@layout/fragment_home_fragment" />
+        tools:layout="@layout/fragment_home_fragment" >
+        <action
+            android:id="@+id/home_walking_gecis"
+            app:destination="@id/walking_fragment" />
+        <action
+            android:id="@+id/home_maps_gecis"
+            app:destination="@id/fragment_map" />
+        <action
+            android:id="@+id/home_history_gecis"
+            app:destination="@id/history_fragment" />
+        <action
+            android:id="@+id/home_camera_gecis"
+            app:destination="@id/maps_camera" />
+    </fragment>
     <fragment
         android:id="@+id/walking_fragment"
         android:name="com.example.walking.walking_fragment"
         android:label="fragment_walking_fragment"
-        tools:layout="@layout/fragment_walking_fragment" />
+        tools:layout="@layout/fragment_walking_fragment" >
+        <action
+            android:id="@+id/walking_maps_gecis"
+            app:destination="@id/fragment_map" />
+        <action
+            android:id="@+id/walking_home_gecis"
+            app:destination="@id/home_fragment" />
+    </fragment>
     <fragment
-        android:id="@+id/maps_fragmentt"
-        android:name="com.example.walking.maps_fragment"
-        android:label="fragment_maps_fragment"
-        tools:layout="@layout/fragment_maps_fragment" />
+        android:id="@+id/history_fragment"
+        android:name="com.example.walking.history_fragment"
+        android:label="fragment_history_fragment"
+        tools:layout="@layout/fragment_history_fragment" >
+        <action
+            android:id="@+id/history_maps_gecis"
+            app:destination="@id/fragment_map" />
+        <action
+            android:id="@+id/hsitory_home_gecis"
+            app:destination="@id/home_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/maps_camera"
+        android:name="com.example.walking.maps_camera"
+        android:label="fragment_maps_camera"
+        tools:layout="@layout/fragment_maps_camera" />
+    <fragment
+        android:id="@+id/fragment_map"
+        android:name="com.example.walking.fragment_map"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
 </navigation>

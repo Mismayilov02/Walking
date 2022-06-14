@@ -14,3 +14,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Walking"
 include ':app'
+
+include ':java'
+include ':java'
+include ':java'
