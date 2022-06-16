@@ -2,6 +2,7 @@ package com.example.walking;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -10,11 +11,19 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -55,6 +64,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -71,22 +81,23 @@ import java.util.UUID;
 public class maps_camera extends Fragment {
 
     TextView camera_date , camera_location;
-    String date_c  = "Date: " , Location_c = "Location: ";
-
+    String date_c  = "Date: " , Location_c = "Location: " , stamp = "" , text , current_ddate;
+    Bitmap bitmap;
+    Date date;
     FusedLocationProviderClient fusedLocationProviderClient;
     // List<LatLng> latLng;
     Task<Location> locationTask;
     Location location1;
-    boolean konum = false , handlar_boolean = false;
+    boolean konum = false , handlar_boolean = false , flash = true;
     int izin_kontol = 0;
-    int time = 0;
+    int time = 0 , x , y;
     private GoogleMap mMap;
 
-
-    private ImageView btnCapture;
+CameraManager cameraManager;
+    private ImageView btnCapture , flash_camera , galeri_camera;
     private TextureView textureView;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    Date date = new Date();
+   // Date date = new Date();
 
     //Check state orientation of output image
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -103,6 +114,7 @@ public class maps_camera extends Fragment {
     private CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
+    String mCameraId;
 
     //Save to FILE
     private File file;
@@ -155,19 +167,23 @@ public class maps_camera extends Fragment {
                 @Override
                 public void run() {
 //
-                    String current_ddate = simpleDateFormat.format(date.getTime());
+                     date = new Date();
+                     current_ddate = simpleDateFormat.format(date.getTime());
                     camera_date.setText(date_c +current_ddate);
                 konumbilgisi();
 //                if(location1.getLongitude()!=0) {
                     try {
-                        String text = Location_c + String.valueOf(location1.getLatitude()) + "; " + String.valueOf(location1.getLongitude());
+                         text = Location_c + String.valueOf(location1.getLatitude()) + "; " + String.valueOf(location1.getLongitude());
                         camera_location.setText(text);
-                    }catch (Exception e)
-                    {
+                    }catch (Exception e) {
                         System.out.println(e);
-                        camera_location.setText( Location_c +"null");
-                    }
+                        text = Location_c +"null";
+                        camera_location.setText(text );
 
+
+                    }
+                    stamp = String.valueOf(date_c+current_ddate) +System.lineSeparator() +String.valueOf(text);
+                    //System.out.println(stamp);
 //                }
 //
                     handler.postDelayed(this , 1000);
@@ -176,6 +192,7 @@ public class maps_camera extends Fragment {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -183,9 +200,17 @@ public class maps_camera extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View v=  inflater.inflate(R.layout.fragment_maps_camera, container, false);
 
+        cameraManager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
+        try {
+            mCameraId = cameraManager.getCameraIdList()[0];
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
         fusedLocationProviderClient  = LocationServices.getFusedLocationProviderClient(getActivity());
 
         textureView = v.findViewById(R.id.textureView);
+        flash_camera = v.findViewById(R.id.flash_camera);
+        galeri_camera = v.findViewById(R.id.galeri_camera);
         camera_date = v.findViewById(R.id.camera_time);
         camera_location = v.findViewById(R.id.camera_location);
         //From Java 1.4 , you can use keyword 'assert' to check expression true or false
@@ -199,7 +224,48 @@ public class maps_camera extends Fragment {
             }
         });
 
+        flash_camera.setOnClickListener(view -> {
+//            Camera cam= Camera.open();
+//            Camera.Parameters p = cam.getParameters();
+            if(flash){
+                try {
 
+//                    cam = Camera.open();
+//                    p = cam.getParameters();
+//                    p.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+//                    p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//                    cam.setParameters(p);
+//                    cam.startPreview();
+                   // cameraManager.setTorchMode(cameraId, false);
+                   flash_camera.setImageResource(R.drawable.bolt_on);
+
+                    flash = false;
+                    //System.out.println("false");
+                } catch (Exception e) {
+                  //  e.printStackTrace();
+                    System.out.println(e);
+                }
+            }else {
+                try {
+//                    p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+//                    cam.setParameters(p);
+//                    cam.stopPreview();
+//                    cam.release();
+                   // cameraManager.setTorchMode(cameraId , true);
+                    flash = true;
+                    //System.out.println("ture");
+                   flash_camera.setImageResource(R.drawable.bolt);
+                } catch (Exception e) {
+                   // e.printStackTrace();
+                    System.out.println(e);
+                }
+            }
+        });
+
+        galeri_camera.setOnClickListener(view -> {
+            Intent galery= new Intent(Intent.ACTION_PICK , MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(galery , REQUEST_CAMERA_PERMISSION);
+        });
 
         return  v;
 
@@ -278,6 +344,7 @@ public class maps_camera extends Fragment {
                 private void save(byte[] bytes) {
 
                     Uri images;
+
                     ContentResolver contentResolver = getActivity().getContentResolver();
 
                     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
@@ -290,15 +357,25 @@ public class maps_camera extends Fragment {
                     contentValues.put(MediaStore.Images.Media.DISPLAY_NAME , System.currentTimeMillis()+".jpg");
                     contentValues.put(MediaStore.Images.Media.MIME_TYPE , "images/*");
                     Uri uri = contentResolver.insert(images , contentValues);
+                    Bitmap bitmap1  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
 
                     // conver bitmap
-                    Bitmap bitmap  = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    try {
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(90);
+                        bitmap = drawTextToBitmap(Bitmap.createBitmap(bitmap1, 0, 0, bitmap1.getWidth(), bitmap1.getHeight(), matrix, true) , stamp);
+                      //  bitmap =  ;
+                    }catch (Exception e){
+                        System.out.println(e);
+                    }
+
 
                     OutputStream outputStream = null;
                     try {
                         outputStream = contentResolver.openOutputStream(Objects.requireNonNull(uri));
                     } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                      //  e.printStackTrace();
                     }
                     bitmap.compress(Bitmap.CompressFormat.JPEG , 100 , outputStream);
 
@@ -308,7 +385,7 @@ public class maps_camera extends Fragment {
                     try {
                         outputStream.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                       // e.printStackTrace();
                     }
 
 
@@ -523,6 +600,61 @@ public class maps_camera extends Fragment {
         }catch (Exception e){
             System.out.println(e);
         }
+    }
+
+    public Bitmap drawTextToBitmap(Bitmap bitmap , String gggtext) {
+
+        String gText  =String.valueOf(date_c+current_ddate) +System.lineSeparator() +String.valueOf(text);
+        Bitmap bitmapp = bitmap;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        Resources resources = getActivity().getResources();
+        float scale = resources.getDisplayMetrics().density;
+        // Bitmap bitmap =  BitmapFactory.decodeResource(resources, gResId);
+
+        android.graphics.Bitmap.Config bitmapConfig =
+                bitmapp.getConfig();
+        // set default bitmap config if none
+        if(bitmapConfig == null) {
+            bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        }
+        // resource bitmaps are imutable,
+        // so we need to convert it to mutable one
+        bitmapp = bitmapp.copy(bitmapConfig, true);
+
+        Canvas canvas = new Canvas(bitmapp);
+        // new antialised Paint
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        // text color - #3D3D3D
+        paint.setColor(Color.RED);
+        // text size in pixels
+//        if(bitmapp.getHeight() < 800){
+//            paint.setTextSize((int) (6 * scale));
+//            x =50;
+//            y = 50;
+//        }else if(bitmapp.getHeight()> 3500){
+//            paint.setTextSize((int) (32 * scale));
+//             x =100;
+//             y = 120;
+//        }
+        paint.setTextSize((int) ((bitmapp.getWidth()/120) * scale));
+        x =(bitmapp.getWidth()/120)*4;
+        y = (bitmapp.getHeight()/120)*5;
+
+        // text shadow
+        //paint.setShadowLayer(0f, 0f, 0f, Color.);
+
+        // draw text to the Canvas center
+        Rect bounds = new Rect();
+        paint.getTextBounds(gText, 0, gText.length(), bounds);
+        Toast.makeText(getActivity() , String.valueOf(bitmapp.getHeight()+ " " + bitmapp.getWidth()) , Toast.LENGTH_SHORT).show();
+
+      // (bitmapp.getHeight() + bounds.height()-15);
+
+        canvas.drawText(gText, x, y, paint);
+
+        return bitmapp;
     }
 
 }
