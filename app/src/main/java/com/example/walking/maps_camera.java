@@ -1,5 +1,8 @@
 package com.example.walking;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -12,6 +15,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -54,14 +58,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.ByteArrayOutputStream;
@@ -81,7 +92,7 @@ import java.util.UUID;
 public class maps_camera extends Fragment {
 
     TextView camera_date , camera_location;
-    String date_c  = "Date: " , Location_c = "Location: " , stamp = "" , text , current_ddate;
+    String date_c  = "Date: " , Location_c = "Location: " , stamp = "" , location_text , current_ddate;
     Bitmap bitmap;
     Date date;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -90,11 +101,12 @@ public class maps_camera extends Fragment {
     Location location1;
     boolean konum = false , handlar_boolean = false , flash = true;
     int izin_kontol = 0;
+    LocationRequest locationRequest;
     int time = 0 , x , y;
     private GoogleMap mMap;
 
 CameraManager cameraManager;
-    private ImageView btnCapture , flash_camera , galeri_camera;
+    private ImageView btnCapture , flash_camera , galeri_camera  , open_gps;
     private TextureView textureView;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
    // Date date = new Date();
@@ -173,16 +185,16 @@ CameraManager cameraManager;
                 konumbilgisi();
 //                if(location1.getLongitude()!=0) {
                     try {
-                         text = Location_c + String.valueOf(location1.getLatitude()) + "; " + String.valueOf(location1.getLongitude());
-                        camera_location.setText(text);
+                         location_text = Location_c + String.valueOf(location1.getLatitude()) + "; " + String.valueOf(location1.getLongitude());
+                        camera_location.setText(location_text);
                     }catch (Exception e) {
                         System.out.println(e);
-                        text = Location_c +"null";
-                        camera_location.setText(text );
+                        location_text = Location_c +"null";
+                        camera_location.setText(location_text );
 
 
                     }
-                    stamp = String.valueOf(date_c+current_ddate) +System.lineSeparator() +String.valueOf(text);
+                    stamp = String.valueOf(date_c+current_ddate) +System.lineSeparator() +String.valueOf(location_text);
                     //System.out.println(stamp);
 //                }
 //
@@ -213,6 +225,7 @@ CameraManager cameraManager;
         galeri_camera = v.findViewById(R.id.galeri_camera);
         camera_date = v.findViewById(R.id.camera_time);
         camera_location = v.findViewById(R.id.camera_location);
+        open_gps = v.findViewById(R.id.open_gps);
         //From Java 1.4 , you can use keyword 'assert' to check expression true or false
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
@@ -222,6 +235,49 @@ CameraManager cameraManager;
             public void onClick(View view) {
                 takePicture();
             }
+        });
+
+
+        //gps_open method
+        open_gps.setOnClickListener(view -> {
+            locationRequest  = LocationRequest.create();
+            locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            locationRequest.setInterval(5000);
+            locationRequest.setFastestInterval(3000);
+
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest)
+                    .setAlwaysShow(true);
+
+            Task<LocationSettingsResponse> locationSettingsResponseTask = LocationServices.getSettingsClient(getActivity())
+                    .checkLocationSettings(builder.build());
+
+            locationSettingsResponseTask.addOnCompleteListener(new OnCompleteListener<LocationSettingsResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
+                    try {
+                        LocationSettingsResponse response = task.getResult(ApiException.class);
+                        Toast.makeText(getActivity() , "GPS is already enable" , Toast.LENGTH_SHORT).show();
+
+
+                    }catch (ApiException e){
+                        if(e.getStatusCode() == LocationSettingsStatusCodes.RESOLUTION_REQUIRED){
+                            ResolvableApiException resolvableApiException = (ResolvableApiException) e;
+                            try {
+                                resolvableApiException.startResolutionForResult(getActivity() , 101);
+                            } catch (IntentSender.SendIntentException sendIntentException) {
+                                sendIntentException.printStackTrace();
+                            }
+                        }
+
+                        if(e.getStatusCode() == LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE){
+                            Toast.makeText(getActivity() , "settings no avaible" , Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                }
+            });
+
         });
 
         flash_camera.setOnClickListener(view -> {
@@ -363,7 +419,7 @@ CameraManager cameraManager;
                     // conver bitmap
                     try {
                         Matrix matrix = new Matrix();
-                        matrix.postRotate(90);
+                        matrix.postRotate(0);
                         bitmap = drawTextToBitmap(Bitmap.createBitmap(bitmap1, 0, 0, bitmap1.getWidth(), bitmap1.getHeight(), matrix, true) , stamp);
                       //  bitmap =  ;
                     }catch (Exception e){
@@ -604,7 +660,7 @@ CameraManager cameraManager;
 
     public Bitmap drawTextToBitmap(Bitmap bitmap , String gggtext) {
 
-        String gText  =String.valueOf(date_c+current_ddate) +System.lineSeparator() +String.valueOf(text);
+        String gText  =String.valueOf(date_c+current_ddate);
         Bitmap bitmapp = bitmap;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -638,7 +694,7 @@ CameraManager cameraManager;
 //             x =100;
 //             y = 120;
 //        }
-        paint.setTextSize((int) ((bitmapp.getWidth()/120) * scale));
+        paint.setTextSize((int) ((55 * scale)));
         x =(bitmapp.getWidth()/120)*4;
         y = (bitmapp.getHeight()/120)*5;
 
@@ -650,11 +706,83 @@ CameraManager cameraManager;
         paint.getTextBounds(gText, 0, gText.length(), bounds);
         Toast.makeText(getActivity() , String.valueOf(bitmapp.getHeight()+ " " + bitmapp.getWidth()) , Toast.LENGTH_SHORT).show();
 
-      // (bitmapp.getHeight() + bounds.height()-15);
+        // (bitmapp.getHeight() + bounds.height()-15);
+
+        canvas.drawText(gText, x, y, paint);
+
+       return drawTextToBitmap22(bitmapp , String.valueOf(location_text));
+    }
+    public Bitmap drawTextToBitmap22(Bitmap bitmap , String gggtext) {
+
+        String gText  =String.valueOf(location_text);
+        Bitmap bitmapp = bitmap;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        Resources resources = getActivity().getResources();
+        float scale = resources.getDisplayMetrics().density;
+        // Bitmap bitmap =  BitmapFactory.decodeResource(resources, gResId);
+
+        android.graphics.Bitmap.Config bitmapConfig =
+                bitmapp.getConfig();
+        // set default bitmap config if none
+        if(bitmapConfig == null) {
+            bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+        }
+        // resource bitmaps are imutable,
+        // so we need to convert it to mutable one
+        bitmapp = bitmapp.copy(bitmapConfig, true);
+
+        Canvas canvas = new Canvas(bitmapp);
+        // new antialised Paint
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        // text color - #3D3D3D
+        paint.setColor(Color.RED);
+        // text size in pixels
+//        if(bitmapp.getHeight() < 800){
+//            paint.setTextSize((int) (6 * scale));
+//            x =50;
+//            y = 50;
+//        }else if(bitmapp.getHeight()> 3500){
+//            paint.setTextSize((int) (32 * scale));
+//             x =100;
+//             y = 120;
+//        }
+        paint.setTextSize((int) ((55 * scale)));
+        x =(bitmapp.getWidth()/120)*4;
+        y = ((bitmapp.getHeight()/120)*5)+110;
+
+        // text shadow
+        //paint.setShadowLayer(0f, 0f, 0f, Color.);
+
+        // draw text to the Canvas center
+        Rect bounds = new Rect();
+        paint.getTextBounds(gText, 0, gText.length(), bounds);
+        Toast.makeText(getActivity() , String.valueOf(bitmapp.getHeight()+ " " + bitmapp.getWidth()) , Toast.LENGTH_SHORT).show();
+
+        // (bitmapp.getHeight() + bounds.height()-15);
 
         canvas.drawText(gText, x, y, paint);
 
         return bitmapp;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // open location permition reguest
+        if(requestCode ==101){
+            if(requestCode ==RESULT_OK)
+            {
+                Toast.makeText(getActivity() , " now GPS is enable" , Toast.LENGTH_SHORT).show();
+
+            }
+            if(requestCode == RESULT_CANCELED){
+                Toast.makeText(getActivity() , " denied GPS  enable" , Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
+    }
 }
