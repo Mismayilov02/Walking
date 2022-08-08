@@ -1,4 +1,4 @@
-package com.example.walking;
+package com.i_mehemmed.walking;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -7,11 +7,13 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -44,7 +46,7 @@ public class fragment_map extends Fragment {
     private GoogleMap mMap;
     // private FragmentMapsFragmentBinding binding;
     SearchView searchView;
-    ImageView layer_image , konum_image;
+    ImageView layer_image , exit_image ;
     Polyline polyline;
     // Location current_location ;
     // LocationRequest locationRequest;
@@ -80,6 +82,7 @@ public class fragment_map extends Fragment {
             mMap = googleMap;
             mMap.setMyLocationEnabled(true);
             mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
             konumbilgisi();
             //  double en  = -34, uzun = 151;
             // LatLng sydney = new LatLng(current_location.getLatitude(), uzun);
@@ -129,17 +132,18 @@ public class fragment_map extends Fragment {
                 // mMap.addMarker(new MarkerOptions().position(home).title("home in Sydney"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(stop, 20f));
             }else {
-                LatLng home = new LatLng(-47.466331, 40.632236);
-                googleMap.addMarker(new MarkerOptions().position(home).title("home in Sydney"));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(home));
-                PolylineOptions polylineOptions;
-                List<LatLng> latLngs = new ArrayList<>();
-                //  latLngs.add(sydney);
-                latLngs.add(home);
-
-                polylineOptions = new PolylineOptions().addAll(latLngs);
-
-                polyline = mMap.addPolyline(polylineOptions);
+//                LatLng home = new LatLng(-47.466331, 40.632236);
+//                googleMap.addMarker(new MarkerOptions().position(home).title("home in Sydney"));
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLng(home));
+//                PolylineOptions polylineOptions;
+//                List<LatLng> latLngs = new ArrayList<>();
+//                //  latLngs.add(sydney);
+//                latLngs.add(home);
+//
+//                polylineOptions = new PolylineOptions().addAll(latLngs);
+//
+//                polyline = mMap.addPolyline(polylineOptions);
+                now_conum();
             }
         }
     };
@@ -154,13 +158,9 @@ public class fragment_map extends Fragment {
         go_map = getActivity().getSharedPreferences("go_konum" , MODE_PRIVATE);
         go_history = go_map.getBoolean("true"  , false);
         position =   go_map.getInt("position" , 0);
-        Toast.makeText(getActivity()  , String.valueOf(position) , Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity()  , String.valueOf(position) , Toast.LENGTH_SHORT).show();
 
 
-//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
         if(izin_kontol != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(getActivity()   ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION} , 100);
 
@@ -171,32 +171,40 @@ public class fragment_map extends Fragment {
 
 
         layer_image = v.findViewById(R.id.uydu_image);
-        konum_image = v.findViewById(R.id.konum_image);
+        exit_image = v.findViewById(R.id.map_exit_image);
         searchView = v.findViewById(R.id.searchView);
+
+        exit_image.setOnClickListener(view -> {
+            Navigation.findNavController(view ).navigate(R.id.navhost_map_backHome);
+        });
 
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
 
-                if(searchView.getQuery() == null || searchView.getQuery().toString() ==""){
+              try {
+                    if (searchView.getQuery() == null || searchView.getQuery().toString() == "") {
 
-                }else {
-                    String get_konum = searchView.getQuery().toString();
-                    List<Address> addressList = null;
-                    Geocoder geocoder = new Geocoder(getActivity() );
-                    try {
-                        addressList = geocoder.getFromLocationName(get_konum, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } else {
+                        String get_konum = searchView.getQuery().toString();
+                        List<Address> addressList = null;
+                        Geocoder geocoder = new Geocoder(getActivity());
+                        try {
+                            addressList = geocoder.getFromLocationName(get_konum, 1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        Address address = addressList.get(0);
+                        LatLng deneme = new LatLng(address.getLatitude(), address.getLongitude());
+                        mMap.clear();
+                        mMap.addMarker(new MarkerOptions().position(deneme).title("position"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(deneme, 15f));
                     }
+                }catch (Exception e){
 
-                    Address address = addressList.get(0);
-                    LatLng deneme = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(deneme).title("position"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(deneme, 15f));
-                }
+              }
 
 
                 return false;
@@ -208,39 +216,20 @@ public class fragment_map extends Fragment {
             }
         });
 
-        konum_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-
-                izin_kontol = ContextCompat.checkSelfPermission(getActivity()  , Manifest.permission.ACCESS_FINE_LOCATION);
-
-                if(mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
-                    mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-
-                }
-
-                if(izin_kontol != PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(getActivity()  ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION} , 100);
-
-                    //getcurrent_location();
-                }else {
-                    locationTask = fusedLocationProviderClient.getLastLocation();
-                    now_conum();
-                }
-
-
-            }
-        });
 
         layer_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
                     mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                    layer_image.setColorFilter(Color.WHITE);
+                    exit_image.setColorFilter(Color.WHITE);
 
                 }else{
                     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    layer_image.setColorFilter(Color.BLACK);
+                    exit_image.setColorFilter(Color.BLACK);
 
                 }
             }
@@ -302,7 +291,7 @@ public class fragment_map extends Fragment {
                 LatLng neww = new LatLng(location1.getLatitude(), location1.getLongitude());
                 mMap.clear();
                 //  mMap.addMarker(new MarkerOptions().position(neww).title("now"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(neww, 20f));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(neww, 18.5f));
 
             }else{
                 System.out.println("false");
@@ -311,21 +300,7 @@ public class fragment_map extends Fragment {
         });
     }
 
-    public void permition(){
-        if (ContextCompat.checkSelfPermission(getActivity() ,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity() ,
-                    Manifest.permission.ACCESS_FINE_LOCATION)){
-                ActivityCompat.requestPermissions(getActivity() ,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
-            }else{
-                ActivityCompat.requestPermissions(getActivity() ,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            }
-
-        }
-    }
 
 
 

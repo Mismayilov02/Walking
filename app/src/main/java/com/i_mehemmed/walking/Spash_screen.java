@@ -1,11 +1,10 @@
-package com.example.walking;
+package com.i_mehemmed.walking;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -58,7 +57,7 @@ public class Spash_screen extends AppCompatActivity {
             public void run() {
                 startActivity(intent);
             }
-        };handler.postDelayed(runnable , 2700);
+        };handler.postDelayed(runnable , 2000);
 
 
     }

@@ -14,7 +14,6 @@
             <option value="$PROJECT_DIR$/java" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

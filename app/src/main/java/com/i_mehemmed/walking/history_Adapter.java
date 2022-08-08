@@ -1,4 +1,4 @@
-package com.example.walking;
+package com.i_mehemmed.walking;
 
 import android.content.Context;
 import android.view.LayoutInflater;

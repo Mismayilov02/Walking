@@ -1,17 +1,12 @@
-package com.example.walking;
+package com.i_mehemmed.walking;
 
 import static android.content.Context.MODE_PRIVATE;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -23,33 +18,23 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.os.Handler;
-import android.renderscript.ScriptGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.SearchView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 
 public class walking_fragment extends Fragment  {
@@ -65,7 +50,7 @@ public class walking_fragment extends Fragment  {
     String date_time;
     SimpleDateFormat simpleDateFormat;
 
-    TextView run_timer_text;
+    TextView run_timer_text  ,speed_text , kcal_text;
     SharedPreferences sharedPreferenceskonum , sharedPreferencesleng;
     SharedPreferences.Editor editorkonum , editorleng;
     int shared_leng = 0;
@@ -81,21 +66,13 @@ public class walking_fragment extends Fragment  {
     int time = 0;
     private GoogleMap mMap;
     //private ActivityMapsBinding binding;
-
-    Button runing_exit_btn, lockscreen_btn, run_play_btn;
+ImageView lockscreen_btn;
+    Button runing_exit_btn, run_play_btn;
     boolean lockscreen_btn_boolean = false, run_play_btn_bollean = false;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
+
         @Override
         public void onMapReady(GoogleMap googleMap) {
             izin_kontol = ContextCompat.checkSelfPermission(getActivity() , Manifest.permission.ACCESS_FINE_LOCATION);
@@ -129,11 +106,11 @@ public class walking_fragment extends Fragment  {
                 // getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 // lockscreen_btn.setDr;
                 lockscreen_btn_boolean = true;
-                lockscreen_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unlock, 0, 0, 0);
+                lockscreen_btn.setImageResource(R.drawable.unlock);
                 Toast.makeText(getActivity(), "always-on display: on", Toast.LENGTH_LONG).show();
             } else {
                 lockscreen_btn_boolean = false;
-                lockscreen_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+                lockscreen_btn.setImageResource(R.drawable.lock);
                 Toast.makeText(getActivity(), "always-on display: default", Toast.LENGTH_LONG).show();
             }
 
@@ -142,61 +119,63 @@ public class walking_fragment extends Fragment  {
 
         run_play_btn.setOnClickListener(view -> {
 
-            get_gps_dialog();
-//            if (!run_play_btn_bollean) {
-//                sharedPreferencesleng = this.getActivity().getSharedPreferences("shard_history_leng"  , MODE_PRIVATE);
-//                editorleng = sharedPreferencesleng.edit();
-//                shared_leng = sharedPreferencesleng.getInt("history_leng" , 0);
-//                Toast.makeText(getActivity() , String.valueOf(shared_leng) , Toast.LENGTH_SHORT).show();
-//                sharedPreferenceskonum = this.getActivity().getSharedPreferences(String.valueOf("shared_history_konum"+shared_leng) ,MODE_PRIVATE);
-//                editorkonum = sharedPreferenceskonum.edit();
-//
-//
-//
-//                izin_kontol = ContextCompat.checkSelfPermission(getActivity() , Manifest.permission.ACCESS_FINE_LOCATION);
-//
-//
-//                if(izin_kontol != PackageManager.PERMISSION_GRANTED){
-//                    ActivityCompat.requestPermissions(getActivity()  ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION} , 100);
-//
-//                    //getcurrent_location();
-//                }else {
-//
-//                    locationTask = fusedLocationProviderClient.getLastLocation();
-//                    konumbilgisi();
-//                    run_play_btn_bollean= true;
-//                    run_play_btn.setText("Pause");
-//                    if(konum){
-//                        play_runn();
-//                    }
-//                }
-//
-//            } else {
-//                run_play_btn_bollean = false;
-//
-//                run_play_btn.setText("Play");
-//
-//                if(handlar_boolean){
-//                    date =new Date();
-//                    calendar = Calendar.getInstance();
-//                    simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-//                    date_time = simpleDateFormat.format(date.getTime());
-//                    handler.removeCallbacks(runnable);
-//                    editorleng.putInt("history_leng"  ,++shared_leng);
-//                    editorkonum.putString("history_date"  , date_time);
-//                    editorkonum.putInt("konum_leng" ,time);
-//                    Toast.makeText(getActivity() , String.valueOf(time) , Toast.LENGTH_SHORT).show();
-//
-//                    editorleng.commit();
-//                    editorkonum.commit();
-//                    time =0;
-//                    run_timer_text.setText("0");
-//
-//                    handlar_boolean=false;
-//                    // for()
-//                }
-//
-//            }
+           // get_gps_dialog();
+            if (!run_play_btn_bollean) {
+                sharedPreferencesleng = this.getActivity().getSharedPreferences("shard_history_leng"  , MODE_PRIVATE);
+                editorleng = sharedPreferencesleng.edit();
+                shared_leng = sharedPreferencesleng.getInt("history_leng" , 0);
+                Toast.makeText(getActivity() , String.valueOf(shared_leng) , Toast.LENGTH_SHORT).show();
+                sharedPreferenceskonum = this.getActivity().getSharedPreferences(String.valueOf("shared_history_konum"+shared_leng) ,MODE_PRIVATE);
+                editorkonum = sharedPreferenceskonum.edit();
+
+
+
+                izin_kontol = ContextCompat.checkSelfPermission(getActivity() , Manifest.permission.ACCESS_FINE_LOCATION);
+
+
+                if(izin_kontol != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(getActivity()  ,new String[]{Manifest.permission.ACCESS_FINE_LOCATION} , 100);
+
+                    //getcurrent_location();
+                }else {
+
+                    locationTask = fusedLocationProviderClient.getLastLocation();
+                    konumbilgisi();
+                    run_play_btn_bollean= true;
+                    run_play_btn.setText("Pause");
+                    if(konum){
+                        play_runn();
+                    }
+                }
+
+            } else {
+                run_play_btn_bollean = false;
+
+                run_play_btn.setText("Play");
+
+                if(handlar_boolean){
+                    date =new Date();
+                    calendar = Calendar.getInstance();
+                    simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    date_time = simpleDateFormat.format(date.getTime());
+                    handler.removeCallbacks(runnable);
+                    editorleng.putInt("history_leng"  ,++shared_leng);
+                    editorkonum.putString("history_date"  , date_time);
+                    editorkonum.putInt("konum_leng" ,time);
+                    Toast.makeText(getActivity() , String.valueOf(time) , Toast.LENGTH_SHORT).show();
+
+                    editorleng.commit();
+                    editorkonum.commit();
+                    time =0;
+                    run_timer_text.setText("0");
+                    speed_text.setText("0 Km/h");
+                    kcal_text.setText("0 Kcal");
+
+                    handlar_boolean=false;
+                    // for()
+                }
+
+            }
         });
                 return v;
             }
@@ -306,26 +285,23 @@ public class walking_fragment extends Fragment  {
 
 
     }
-
-    void get_gps_dialog(){
-        dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.konum_open_dialog);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-
-        Button wifiAgain  = dialog.findViewById(R.id.open_gps_btn);
-        wifiAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Enable GPS
-//                Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-//                intent.putExtra("enabled", true);
-//                sendBroadcast(intent);
-
-                dialog.dismiss();
-            }
-        });
-    }
+//
+//   static void get_gps_dialog(){
+//      Dialog  dialog = new Dialog(ge);
+//        dialog.setContentView(R.layout.konum_open_dialog);
+//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//        dialog.show();
+//
+//        Button wifiAgain  = dialog.findViewById(R.id.open_gps_btn);
+//        wifiAgain.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//
+//                dialog.dismiss();
+//            }
+//        });
+//    }
 
 
 }

@@ -14,8 +14,8 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             map:layout_constraintBottom_toBottomOf="parent"
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
@@ -24,39 +24,43 @@
 
 
         <ImageView
-            android:id="@+id/konum_image"
+            android:id="@+id/uydu_image"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="8dp"
-
+            android:layout_marginEnd="10dp"
+            android:contentDescription="TODO"
+            android:padding="3dp"
             map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintTop_toBottomOf="@+id/uydu_image"
-            map:srcCompat="@drawable/gps" />
+            map:layout_constraintTop_toBottomOf="@+id/searchView"
+            map:srcCompat="@drawable/ic_layers" />
 
         <SearchView
             android:id="@+id/searchView"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="60dp"
             android:background="@color/black_lite"
+            android:visibility="visible"
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/uydu_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="TODO"
-            map:layout_constraintEnd_toEndOf="parent"
-
-            map:layout_constraintTop_toBottomOf="@+id/searchView"
-            map:srcCompat="@drawable/layers" />
+            android:id="@+id/map_exit_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:rotationY="-180"
+            android:padding="5dp"
+            map:layout_constraintBottom_toBottomOf="@+id/searchView"
+            map:layout_constraintEnd_toStartOf="@+id/searchView"
+            map:layout_constraintStart_toStartOf="parent"
+            map:layout_constraintTop_toTopOf="@+id/searchView"
+            map:srcCompat="@drawable/right_arrow"
+            map:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

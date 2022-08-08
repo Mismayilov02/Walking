@@ -1,16 +1,11 @@
-package com.example.walking;
+package com.i_mehemmed.walking;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.CameraX;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 
-import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
