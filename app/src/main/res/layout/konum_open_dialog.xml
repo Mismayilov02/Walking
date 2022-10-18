@@ -7,8 +7,8 @@
     android:background="@android:color/transparent">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="280dp"
-        android:layout_height="350dp"
+        android:layout_width="340dp"
+        android:layout_height="420dp"
         app:cardBackgroundColor="@color/green_lite"
         app:cardCornerRadius="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,13 +23,11 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/animationView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="128dp"
+                android:layout_height="132dp"
                 android:layout_marginStart="35dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginEnd="35dp"
-                android:layout_marginBottom="100dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -44,7 +42,7 @@
                 android:layout_marginBottom="-15dp"
                 android:backgroundTint="@color/black"
                 android:paddingBottom="15dp"
-                android:text="Open GPS"
+                android:text="Yes"
                 android:textColor="@color/green_lite"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -57,17 +55,28 @@
                 android:id="@+id/textView6"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:gravity="center"
-                android:text="Uh-oh! Sorry, there's no GPS reception in this location"
+                android:text="Hello. \nWe are very glad to see you. \nThis app accesses your location directly to track your walk tracking and use maps. This is very important for us to serve you better. Do you allow access to your location for tracking even if you exit without being applied?"
                 android:textColor="#000000"
-                android:textSize="14sp"
+                android:textSize="18sp"
                 android:textStyle="normal"
                 app:layout_constraintBottom_toTopOf="@+id/open_gps_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/animationView" />
+
+            <ImageView
+                android:id="@+id/konum_btn_exit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:padding="5dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/cross" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

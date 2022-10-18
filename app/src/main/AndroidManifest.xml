@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.i_mehemmed.walking">
+    package="com.mehemmed_i.walking">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="  android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name=" android.permission.ACCESS_MOCK_LOCATION" />
 
 
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
-    <uses-permission android:name="android.hardware.camera2.full" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -51,10 +50,10 @@
             android:value="AIzaSyAAXXQ26l9ELAU6dL5XIjJXOzd3MGikI1Q" />
 
         <activity
-            android:name="com.i_mehemmed.walking.MainActivity"
+            android:name="com.mehemmed_i.walking.MainActivity"
             android:exported="false" />
         <activity
-            android:name="com.i_mehemmed.walking.Spash_screen"
+            android:name="com.mehemmed_i.walking.Spash_screen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,6 +61,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name="com.mehemmed_i.walking.LocationService"/>
     </application>
 
 </manifest>

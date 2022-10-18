@@ -10,9 +10,9 @@ android {
         applicationId "com.i_mehemmed.walking"
         minSdk 22
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
-        applicationId "opencv.org"
+        versionCode 4
+        versionName "1.0.4"
+        
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +39,9 @@ android {
     }
 }
 
+apply plugin:"androidx.navigation.safeargs"
+
+
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.4.2'
@@ -59,8 +62,10 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.0-alpha04'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation "androidx.camera:camera-core:1.2.0-alpha02"
-    implementation "androidx.camera:camera-camera2:1.2.0-alpha02"
+
 
     implementation "com.airbnb.android:lottie:3.4.0"
+
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
 }

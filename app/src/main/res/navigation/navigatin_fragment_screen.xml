@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/home_fragment"
-        android:name="com.i_mehemmed.walking.home_fragment"
+        android:name="com.mehemmed_i.walking.home_fragment"
         android:label="fragment_home_fragment"
         tools:layout="@layout/fragment_home_fragment" >
         <action
             android:id="@+id/home_walking_gecis"
-            app:destination="@id/walking_fragment" />
+            app:destination="@id/run_Fragment" />
         <action
             android:id="@+id/home_maps_gecis"
             app:destination="@id/fragment_map" />
@@ -21,20 +21,8 @@
             app:destination="@id/history_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/walking_fragment"
-        android:name="com.i_mehemmed.walking.walking_fragment"
-        android:label="fragment_walking_fragment"
-        tools:layout="@layout/fragment_walking_fragment" >
-        <action
-            android:id="@+id/walking_maps_gecis"
-            app:destination="@id/fragment_map" />
-        <action
-            android:id="@+id/walking_home_gecis"
-            app:destination="@id/home_fragment" />
-    </fragment>
-    <fragment
         android:id="@+id/history_fragment"
-        android:name="com.i_mehemmed.walking.history_fragment"
+        android:name="com.mehemmed_i.walking.history_fragment"
         android:label="fragment_history_fragment"
         tools:layout="@layout/fragment_history_fragment" >
         <action
@@ -46,11 +34,31 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_map"
-        android:name="com.i_mehemmed.walking.fragment_map"
+        android:name="com.mehemmed_i.walking.fragment_map"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" >
         <action
             android:id="@+id/navhost_map_backHome"
             app:destination="@id/home_fragment" />
+        <argument
+            android:name="run_or_map"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/run_Fragment"
+        android:name="com.mehemmed_i.walking.Run_Fragment"
+        android:label="fragment_run_"
+        tools:layout="@layout/fragment_run_" >
+        <action
+            android:id="@+id/walking_home_gecis"
+            app:destination="@id/home_fragment" />
+        <action
+            android:id="@+id/walking_maps_gecis"
+            app:destination="@id/fragment_map" />
     </fragment>
 </navigation>
