@@ -16,14 +16,10 @@ public interface History_Dao {
 
     @Query("select * from History")
     History[] read_history_all();
-//    @Query("update history set id =:id where is_sync= :sync")
-//    void update_history(int id ,  boolean sync );
 
     @Query("delete from history")
     void delete_history_all();
 
-//    @Query("DELETE FROM history WHERE is_sync = :sync")
-//     void delete_history(boolean sync);
 
 
 
