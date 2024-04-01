@@ -20,11 +20,11 @@
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent"
-            tools:context=".fragment_map" />
+            tools:context=".MapFragment" />
 
 
         <ImageView
-            android:id="@+id/uydu_image"
+            android:id="@+id/layerImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
@@ -43,7 +43,7 @@
             android:layout_marginStart="50dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="60dp"
-            android:background="@color/black_lite"
+            android:background="@drawable/searchview_style"
             android:visibility="visible"
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"

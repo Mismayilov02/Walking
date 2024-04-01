@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mehemmed_i.walking">
+    package="com.imehemmed.walking">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.INTERNET" />
@@ -47,13 +47,13 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YourApiKEy" />
+            android:value="AIzaSyAAXXQ26l9ELAU6dL5XIjJXOzd3MGikI1Q" />
 
         <activity
-            android:name="com.mehemmed_i.walking.MainActivity"
+            android:name="com.imehemmed.walking.MainActivity"
             android:exported="false" />
         <activity
-            android:name="com.mehemmed_i.walking.Spash_screen"
+            android:name="com.imehemmed.walking.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -61,7 +61,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.mehemmed_i.walking.LocationService"/>
+        <service android:name="com.imehemmed.walking.LocationService"/>
     </application>
 
 </manifest>

@@ -12,5 +12,6 @@
     <color name="none">#1EFFFFFF</color>
     <color name="green_yellow">#A7D716</color>
     <color name="green_lite">#799C0E</color>
+    <color name="textColor">#FF000000</color>
 
 </resources>
